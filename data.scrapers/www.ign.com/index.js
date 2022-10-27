@@ -15,14 +15,13 @@ AXIOS.get(URL).then(({data}) => {
 
     const $ = CHEERIO.load(data);
     const articlePage = $(".article-page");
-    const animeList = [];
 
-    const initializeAnimeItem = (node) => {
-        $(node).children("h2").each(( i,el) => {
+    const initializeAnimeItems = (node) => {
+        const animeList = [];
+        $(node).children("h2").each((i, el) => {
             const element = $(el);
-
             if (element.text().length !== 0) {
-                let animeItem = new Object(AnimeListItem);
+                let animeItem = Object.create(AnimeListItem);
 
                 const rankAndName = splitName(element.text());
                 animeItem.name = rankAndName[1];
@@ -30,10 +29,11 @@ AXIOS.get(URL).then(({data}) => {
 
                 const imgElement = $(element.next().children().children().html())
                 animeItem.imageURL = imgElement.attr("src");
-
+                animeItem.description = element.next().next().text();
                 animeList.push(animeItem);
             }
-        })
+        });
+        return animeList;
     }
 
     const findSrc = (node) => {
@@ -44,8 +44,8 @@ AXIOS.get(URL).then(({data}) => {
         return str.split(". ");
     }
 
-    initializeAnimeItem(articlePage);
-    console.log(animeList);
+    let arr = initializeAnimeItems(articlePage);
+    console.log(arr);
 
 
 }).catch((error) => console.error(error));
