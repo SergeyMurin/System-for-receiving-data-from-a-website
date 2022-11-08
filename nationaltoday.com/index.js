@@ -52,15 +52,20 @@ const run = () => {
         const list = [];
 
         $(topLayerSelector).each((index, element) => {
-            const item = Object.create(listItem);
+            const item = Object.assign({}, listItem);
             item.URL = utilities.callMethodChildren(element, 3).attr("href");
             item.imageURL = utilities.callMethodChildren(element, 3).attr("style")
                 .split("background-image: url(")[1]
                 .split(");")[0];
+            item.shares = $(element).find(".trending-share-count").html();
+            item.date.day = $(element).find(".ntdb-holiday-day").text();
+            item.date.date = $(element).find(".ntdb-holiday-date").text();
+            item.excerpt = $(element).find(".excerpt").text().trim();
+            item.title = $(element).find("h3").text().trim();
 
             list.push(item);
         });
-        // console.log(list);
+        console.log(list);
     }).catch((error) => console.error(error));
 };
 

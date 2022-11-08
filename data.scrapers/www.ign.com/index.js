@@ -25,7 +25,7 @@ const run = () => {
             selectedTags.each((i, el) => {
                 const element = $(el);
                 if (element.text().length !== 0) {
-                    let item = Object.create(listItem);
+                    let item = Object.assign({}, listItem);
 
                     const rankAndName = splitName(element.text());
                     item.name = rankAndName[1];
