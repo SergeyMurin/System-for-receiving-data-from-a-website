@@ -1,50 +1,54 @@
-const AXIOS = require("axios");
-const CHEERIO = require("cheerio");
+const axios = require("axios");
+const cheerio = require("cheerio");
 const {utilities} = require("../../auxiliary.utilities");
 
 
 const URL = `https://www.ign.com/articles/top-25-best-anime-series-of-all-time`;
 
-const AnimeListItem = {
-    name: "",
-    imageURL: "",
-    description: "",
-    rank: "",
+const listItem = {
+    name: undefined,
+    imageURL: undefined,
+    description: undefined,
+    rank: undefined,
 }
 
 
-AXIOS.get(URL).then(({data}) => {
+const run = () => {
+    axios.get(URL).then(({data}) => {
 
-    const $ = CHEERIO.load(data);
-    const articlePage = $(".article-page");
+        const $ = cheerio.load(data);
+        const articlePage = $(".article-page");
 
-    const initializeAnimeItems = (node) => {
-        const animeList = [];
-        const selectedTags = utilities.callMethodChildren($(node),null, ["h2"]);
-        selectedTags.each((i, el) => {
-            const element = $(el);
-            if (element.text().length !== 0) {
-                let animeItem = Object.create(AnimeListItem);
+        const initItems = (node) => {
+            const list = [];
+            const selectedTags = utilities.callMethodChildren($(node), null, ["h2"]);
+            selectedTags.each((i, el) => {
+                const element = $(el);
+                if (element.text().length !== 0) {
+                    let item = Object.assign({}, listItem);
 
-                const rankAndName = splitName(element.text());
-                animeItem.name = rankAndName[1];
-                animeItem.rank = rankAndName[0];
+                    const rankAndName = splitName(element.text());
+                    item.name = rankAndName[1];
+                    item.rank = rankAndName[0];
 
-                const imgElement = $(utilities.callMethodChildren(utilities.callMethodNext(element, 1), 2).html());
-                animeItem.imageURL = imgElement.attr("src");
-                animeItem.description = utilities.callMethodNext(element, 2).text();
+                    const imgElement = $(utilities.callMethodChildren(utilities.callMethodNext(element, 1), 2).html());
+                    item.imageURL = imgElement.attr("src");
+                    item.description = utilities.callMethodNext(element, 2).text();
 
-                animeList.push(animeItem);
-            }
-        });
-        return animeList;
-    }
+                    list.push(item);
+                }
+            });
+            return list;
+        }
 
-    const splitName = (str) => {
-        return str.split(". ");
-    }
+        const splitName = (str) => {
+            return str.split(". ");
+        }
 
-    let arr = initializeAnimeItems(articlePage);
-    console.log(arr);
-    
-}).catch((error) => console.error(error));
+        const list = initItems(articlePage);
+        console.log(list);
+
+    }).catch((error) => console.error(error));
+}
+
+run();
