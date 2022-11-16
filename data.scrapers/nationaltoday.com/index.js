@@ -1,6 +1,5 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
-const {utilities} = require("../auxiliary.utilities");
 
 const URL = "https://nationaltoday.com";
 
@@ -41,9 +40,8 @@ const getCurrentDate = () => {
 
 
 const run = () => {
-    let list = [];
     let $ = cheerio.load("");
-    const url = makeNewURL(URL);
+    const url = makeNewURL(URL, events.holidays);
 
     axios.get(url).then(({data}) => {
         $ = cheerio.load(data);
