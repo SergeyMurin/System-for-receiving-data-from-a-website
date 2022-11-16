@@ -49,7 +49,7 @@ const getProduct = (data, list) => {
     })
 };
 
-const getProductDescription = (data, list) => {
+const initProductDescription = (data, list) => {
     const $ = cheerio.load(data);
 
     $(config.selectors.listSelector).each((i, el) => {
@@ -59,8 +59,13 @@ const getProductDescription = (data, list) => {
         firstPartOfTheDescription = clearString(firstPartOfTheDescription);
         let secondPartOfTheDescription = $(el)
             ?.find(config.selectors.descriptionSelectors.descriptionSelector)
-            ?.data()?.[config.selectors.descriptionSelectors.descriptionTruncateOverflowParam];
+            ?.data()
+            ?.[config.selectors.descriptionSelectors.descriptionTruncateOverflowParam];
         secondPartOfTheDescription = clearString(secondPartOfTheDescription);
+        let description = "";
+        if (firstPartOfTheDescription === null || secondPartOfTheDescription === null) {
+            description = null;
+        } else description = firstPartOfTheDescription + secondPartOfTheDescription;
 
         let usersStr = $(el).find(config.selectors.usersSelector).last().text();
         usersStr = clearString(usersStr);
@@ -68,21 +73,15 @@ const getProductDescription = (data, list) => {
 
         let industriesStr = $(el).find(config.selectors.industriesSelector).first().text();
         industriesStr = clearString(industriesStr);
-        const industries = listSplitter(industriesStr, "Industries");
+        let industries = listSplitter(industriesStr, "Industries");
 
         let marketSegmentStr = $(el).find(config.selectors.industriesSelector).last().text();
         marketSegmentStr = clearString(marketSegmentStr);
         const marketSegment = listSplitter(marketSegmentStr, "Market Segment");
 
-        let description = "";
-        if (firstPartOfTheDescription === null || secondPartOfTheDescription === null) {
-            description = null;
-        } else description = firstPartOfTheDescription + secondPartOfTheDescription;
-
         list[i].product_description = description;
         list[i].industries = industries;
         list[i].marketSegment = marketSegment;
-
     });
 };
 
@@ -91,17 +90,29 @@ const listSplitter = (str, separator) => {
     if (!content || content[0].toLocaleLowerCase() === "no") {
         return null;
     }
-
     return content;
-}
+};
+
+/*const industriesListFormatter = (arr) => {
+    let clearArr = [];
+    for (let i = 0; i < arr?.length; i++) {
+        if (arr[i + 2]) {
+            if (arr[i + 1] === arr[i + 1].toLowerCase() || !(/^[a-zA-Z]+$/.test(arr[i + 1]))) {
+                const item = arr[i] + " " + arr[i + 1] + " " + arr[i + 2];
+                clearArr.push(item);
+            } else clearArr.push(arr[i]);
+        }
+    }
+    return clearArr;
+}*/
 
 
 const dataParse = (data) => {
     const productList = [];
     getProduct(data, productList);
-    getProductDescription(data, productList);
+    initProductDescription(data, productList);
     console.log(productList);
-}
+};
 
 const run = () => {
     try {
