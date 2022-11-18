@@ -4,6 +4,9 @@
     "cheerio": "^1.0.0-rc.12",
     "node-fetch": "^3.3.0",
     "phantomjs": "^2.1.7",
+    "puppeteer": "^19.2.2",
+    "request-promise-native": "^1.0.9",
+    "webdriverio": "^7.26.0",
     "webpage": "^0.3.0"
   }
 }
