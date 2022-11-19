@@ -50,10 +50,7 @@ const wait = async (browser, selector) => {
 
 const getSearchResult = async (browser, selector) => {
     await getSearchResultSections(browser, config.selectors.search_field.section_selector);
-    setTimeout(async () => {
-        await cookiesHandler(browser);
-    }, 8000)
-
+    await cookiesHandler(browser);
 }
 
 const getSearchResultSections = async (browser, selector) => {
@@ -86,7 +83,7 @@ const cookiesHandler = async (browser) => {
         return cookie.name;
     });
     await browser.deleteCookies(cookieNames);
-
+    await browser.execute("location.reload()");
 }
 
 
