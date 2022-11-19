@@ -50,7 +50,9 @@ const wait = async (browser, selector) => {
 
 const getSearchResult = async (browser, selector) => {
     await getSearchResultSections(browser, config.selectors.search_field.section_selector);
-    await cookiesHandler(browser);
+    setTimeout(async () => {
+        await cookiesHandler(browser);
+    }, 8000)
 
 }
 
@@ -83,11 +85,7 @@ const cookiesHandler = async (browser) => {
     const cookieNames = await allCookies.map((cookie) => {
         return cookie.name;
     });
-    setTimeout(async () => {
-        await browser.execute("window.localStorage.clear()");
-        await browser.deleteCookies(cookieNames);
-        await browser.url(await browser.getUrl());
-    }, 10000);
+    await browser.deleteCookies(cookieNames);
 
 }
 
