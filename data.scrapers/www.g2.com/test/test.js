@@ -3,30 +3,19 @@ const config = require("./config");
 const URL = "https://www.g2.com/";
 
 const run = async () => {
-    const browser = await remote({
-        capabilities: {
-            browserName: "chrome",
-        }
-    })
-    await browser.url(URL);
-    //await openFirstUrlWithGoogle(browser, URL);
-    console.log();
-
-    setTimeout(async () => {
+    try {
+        const browser = await remote({
+            capabilities: {
+                browserName: "chrome",
+            }
+        })
+        await browser.url(URL);
+        //await openFirstUrlWithGoogle(browser, URL);
         await search("car", browser);
-    }, 5000)
+    } catch (error) {
+        console.error(error);
+    }
 
-    /*
-        const categories = await browser
-            .$(config.selectors.search_field.categories_selector);
-
-        await categories.waitForDisplayed();
-        let text = await categories.getText();*/
-
-
-    /*setTimeout(() => {
-        browser.deleteSession();
-    }, 80000);*/
 };
 
 
